@@ -11,16 +11,17 @@ describe DockingStation do
     it 'does not release a bike if no bikes available' do
     expect {subject.release_bike}.to raise_error("No bikes available")
     end
-
-    it 'releases working bikes' do
-    bike = Bike.new
+  let(:bike) { double :bike }
+  it 'releases working bikes' do
+    #allow(bike).to receive(:working?).and_return(true)
+    bike = double(:bike, working?: true)
     expect(bike).to be_working
   end 
 
     
    it 'cannot dock bikes' do
-   DockingStation::DEFAULT_CAPACITY.times{subject.dock(Bike.new)}
-   expect { subject.dock(Bike.new) }.to raise_error("No more spaces for bikes")
+   DockingStation::DEFAULT_CAPACITY.times{subject.dock(double(:bike))}
+   expect { subject.dock(double(:bike)) }.to raise_error("No more spaces for bikes")
   
 end 
 
@@ -29,8 +30,10 @@ end
 end 
 
   it 'does not release broken bikes' do
-    bike = Bike.new
-    bike.report_broken
+    bike = double(:bike)
+    #bike.report_broken
+    #allow(bike).to receive(:broken?).and_return(true)
+    bike = double(:bike, broken?: true)
     subject.dock(bike)
     expect {subject.release_bike}.to raise_error "ERROR: Broken Bike"
   end 
